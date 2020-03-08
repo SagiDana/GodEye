@@ -38,6 +38,7 @@ def get_process_from_connection(connection):
     pid = None
     process = None
     for conn in psutil.net_connections("all"):
+        # print("conn: {}".format(conn))
         try:
             # if conn.status != 'ESTABLISHED':
             #     continue
@@ -71,7 +72,7 @@ def get_process_from_connection(connection):
         # elif not is_local_ip(connection[1]):
         #     out, err = execute_command("sudo netstat -antulp | grep {}:{}", connection[1], connection[3])
 
-        match = re.search(r"\d+/(?P<process_name>.*)$", out)
+        match = re.search(r"\d+/(?P<process_name>.*)$", str(out))
         if match == None:
             return "pid: -1"
         else:

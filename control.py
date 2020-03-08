@@ -8,7 +8,6 @@ class Control:
     def __init__(self):
         pass
 
-
     def __get_local_ips(self):
         ip_list = []
         for interface in interfaces():
@@ -39,13 +38,14 @@ class Control:
     def process_packet(self, packet):
         if not self.__is_packet_attached_to_me(packet): return
 
-        if self.__is_packet_dns(packet): DnsRepository.get_instance().on_packet_event(packet)
+        if self.__is_packet_dns(packet): 
+            DnsRepository.get_instance().on_packet_event(packet)
         
         answer = DnsRepository.get_instance().query(packet.remote_ip)
         
         print("[-] [{}]{}: {} -> {}".format(packet.protocol, packet.process, packet.remote_ip, answer))
 
-        # print(DnsRepository.get_instance().queries)
+        print(DnsRepository.get_instance().queries)
 
 
 

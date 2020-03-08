@@ -24,24 +24,17 @@ class DnsRepository:
 
         if p.qdcount > 0 and isinstance(p.qd, DNSQR):
             name = p.qd.qname
-            # print("[-] DNSQR: {}:{} -> {}".format(p['IP'].src, p['IP'].dst, name))
+            print("[-] DNSQR: {}:{} -> {}".format(p['IP'].src, p['IP'].dst, name))
+
         if p.haslayer(DNSRR):
-            a_count = p[DNS].ancount
-            i = a_count + 4
-            while i > 4:
-                question = p[0][i].rrname
-                answer = p[0][i].rdata
-                # print("[-] Answer {}".format(answer))
-                
-                self.queries[answer] = DnsQuery(question, answer)      
+            for i in range(4, p[DNS].ancount + 4):
+                try:
+                    question = p[1][i].rrname
+                    answer = p[1][i].rdata
+                    print("[-] DNSRR: question: {}, answer: {}".format(question, answer))
 
-                # print("[-] DNSRR: {} {} ".format(p[0][i].rdata, p[0][i].rrname))
-                i -= 1
-        
-
-        # ip = "8.8.8.8"
-        # domain = "google.com"
-        # self.queries[ip] = DnsQuery(domain, ip)
+                    self.queries[answer] = DnsQuery(question, answer)      
+                except Exception as e: pass
 
     def query(self, ip):
         if ip in self.queries:

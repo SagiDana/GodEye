@@ -18,11 +18,22 @@ class GodEye:
             process = None
             if tcp_layer:
                 process = get_process_from_connection([ip_layer.src, ip_layer.dst, tcp_layer.sport, tcp_layer.dport])
-                # print("[!] -[{process}]- ({length}): TCP -> {src}:{src_port} -> {dst}:{dst_port}".format(process=process,length=len(packet), src=ip_layer.src, dst=ip_layer.dst, src_port=tcp_layer.sport, dst_port=tcp_layer.dport))
+                # print("[!] -[{process}]- ({length}): TCP -> {src}:{src_port} -> {dst}:{dst_port}".format(process=process,
+                        # length=len(packet), 
+                        # src=ip_layer.src, 
+                        # dst=ip_layer.dst, 
+                        # src_port=tcp_layer.sport, 
+                        # dst_port=tcp_layer.dport))
+
                 p = PacketEvent(process, ip_layer.src, tcp_layer.sport, ip_layer.dst, tcp_layer.dport, len(packet), 'tcp', packet)
             elif udp_layer:
                 process = get_process_from_connection([ip_layer.src, ip_layer.dst, udp_layer.sport, udp_layer.dport])
-                # print("[!] -[{process}]- ({length}): UDP -> {src}:{src_port} -> {dst}:{dst_port}".format(process=process, length=len(packet), src=ip_layer.src, dst=ip_layer.dst, src_port=udp_layer.sport, dst_port=udp_layer.dport))
+                # print("[!] -[{process}]- ({length}): UDP -> {src}:{src_port} -> {dst}:{dst_port}".format(process=process, 
+                    # length=len(packet), 
+                    # src=ip_layer.src, 
+                    # dst=ip_layer.dst, 
+                    # src_port=udp_layer.sport, 
+                    # dst_port=udp_layer.dport))
                 p = PacketEvent(process, ip_layer.src, udp_layer.sport, ip_layer.dst, udp_layer.dport, len(packet), 'udp', packet)
 
             if not p: return
