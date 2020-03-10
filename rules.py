@@ -8,7 +8,7 @@ class Rule:
 
 from dns.dns_queries import *
 import socket
-class RootProcessWhiteListDomains:
+class RootProcessWhiteListDomainsRule:
     def __init__(self, domains):
         self.domains = domains
 
@@ -29,7 +29,6 @@ class RootProcessWhiteListDomains:
 
         return False
 
-
 class ApplicationsToRemotePortsRule:
     def __init__(self, applications, remote_ports):
         self.applications = applications
@@ -37,9 +36,20 @@ class ApplicationsToRemotePortsRule:
 
     def is_match(self, packet):
         for app in self.applications:
-            if packet.process != app: continue
+            if app not in packet.process: continue
 
             for port in self.remote_ports:
                 if packet.remote_port != port: continue
                 return True
+        return False
+
+class AllowMulticastAddressesRule:
+    def __init__(self): pass
+
+    def is_match(self, packet):
+        if packet.process != "pid: -1": return False
+
+        if packet.remote_ip.startswith("224"): return True
+        if packet.remote_ip.startswith("239"): return True
+
         return False

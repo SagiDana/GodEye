@@ -3,7 +3,9 @@ from scapy.all import *
 from packets import *
 from scapy.layers.dns import DNSRR, DNS, DNSQR
 from netifaces import interfaces, ifaddresses, AF_INET
-from rules import ApplicationsToRemotePortsRule, RootProcessWhiteListDomains
+from rules import ApplicationsToRemotePortsRule, RootProcessWhiteListDomainsRule, AllowMulticastAddressesRule
+from process.memory import ProcessMemory
+
 
 class Control:
     def __init__(self, osd):
@@ -46,13 +48,17 @@ class Control:
                                                             ]
                                                         ))
 
-        self.rules.append(RootProcessWhiteListDomains(
+        self.rules.append(RootProcessWhiteListDomainsRule(
                                                             [
                                                                 "_gateway",             # TODO: why is this happening
-                                                                "bbs.archlinux.org",
                                                                 "wtfismyip.com",        # i3 blocks script
+                                                                "bbs.archlinux.org",
+                                                                "mirror.isoc.org.il",   # pacman repo
                                                             ]
                                                         ))
+
+        self.rules.append(AllowMulticastAddressesRule())
+
     def __get_local_ips(self):
         ip_list = []
         for interface in interfaces():
@@ -83,6 +89,8 @@ class Control:
     def process_packet(self, packet):
         if not self.__is_packet_attached_to_me(packet): return
 
+        packet = ProcessMemory.get_instance().query(packet)
+
         if self.__is_packet_dns(packet): 
             DnsRepository.get_instance().on_packet_event(packet)
         
@@ -92,21 +100,23 @@ class Control:
                 to_print = False
         
         if to_print: 
-            print("[!] -[{process}]- ({length}): TCP -> {src}:{src_port} -> {dst}:{dst_port}".format(
+            print("[{process}]-({length}):[TCP]->{src}:{src_port}->{dst}:{dst_port}[[{remote_domain}]]\n".format(
                                                                                                         process=packet.process,
                                                                                                         length=packet.length,
                                                                                                         src=packet.src_ip,
                                                                                                         dst=packet.dst_ip,
                                                                                                         src_port=packet.src_port,
-                                                                                                        dst_port=packet.dst_port
-                                                                                                    ))
+                                                                                                        dst_port=packet.dst_port,
+                                                                                                        remote_domain=DnsRepository.get_instance().query(packet.remote_ip
+                                                                                                    )))
 
-            self.osd.display("[!] -[{process}]- ({length}): TCP -> {src}:{src_port} -> {dst}:{dst_port}\n".format(
+            self.osd.display("[{process}]-({length}):[TCP]->{src}:{src_port}->{dst}:{dst_port}[[{remote_domain}]]\n".format(
                                                                                                                     process=packet.process,
                                                                                                                     length=packet.length,
                                                                                                                     src=packet.src_ip,
                                                                                                                     dst=packet.dst_ip,
                                                                                                                     src_port=packet.src_port,
-                                                                                                                    dst_port=packet.dst_port
-                                                                                                                ))
+                                                                                                                    dst_port=packet.dst_port,
+                                                                                                                    remote_domain=DnsRepository.get_instance().query(packet.remote_ip
+                                                                                                                )))
 

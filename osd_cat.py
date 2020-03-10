@@ -1,11 +1,9 @@
 import subprocess
-from threading import Lock
 from time import sleep
 
 class Osd:
     def __init__(self): 
         self.proc = None
-        self.lock = Lock()
 
     def open(self):
         if self.proc: self.close()
@@ -16,10 +14,10 @@ class Osd:
                         "--delay=5",
                         "--lines=50",
                         "--align=right",
-                        "--indent=400",
+                        "--indent=40",
                         "--pos=middle",
-                        "--color=grey",
-                        # "--font=",
+                        "--color=white",
+                        "--font=lucidasans-bold-10",
                         "-",
                     ],
                     stdout=subprocess.PIPE,
@@ -28,23 +26,21 @@ class Osd:
     def display(self, text):
         if not self.proc: return
 
-        with self.lock:
-            self.proc.stdin.write(text.encode())
-            self.proc.stdin.flush()
-            sleep(1)
+        self.proc.stdin.write(text.encode())
+        self.proc.stdin.flush()
 
     def close(self):
         if not self.proc: return
 
         self.proc.communicate()
 
-        self.proce = None
+        self.proc = None
 
 if __name__ == "__main__":
     osd = Osd()
     osd.open()
 
     for i in range(100):
-        osd.display("ashdas\n")
+        osd.display("test\n")
 
     osd.close()

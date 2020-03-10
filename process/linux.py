@@ -11,10 +11,8 @@ def execute_command(cmd, *args):
         std_out, std_err = pipes.communicate()
 
         return std_out, std_err
-
     except Exception as e:
         print("Exception: {}".format(str(e)))
-        pass
     return None, None
 
 def get_local_ips():
@@ -30,51 +28,17 @@ def is_local_ip(ip):
     return ip in get_local_ips()
 
 def get_process_from_connection(connection):
-    pid = None
     process = None
-    for conn in psutil.net_connections("all"):
-        # print("conn: {}".format(conn))
-        try:
-            # if conn.status != 'ESTABLISHED':
-            #     continue
 
-            lAddr = conn.laddr[0]
-            lPort = conn.laddr[1]
-            rAddr = conn.raddr[0]
-            rPort = conn.raddr[1]
+    out, err = None, None
+    out, err = execute_command("sudo netstat -antulp | grep {}:{} | grep {}:{}", connection[0], connection[2], connection[1], connection[3])
 
-            if lAddr not in connection[:2]:
-                continue
-            if rAddr not in connection[:2]:
-                continue
-            if lPort not in connection[2:]:
-                continue
-            if rPort not in connection[2:]:
-                continue
+    match = re.search(r"\d+/(?P<process_name>.*)$", out.decode())
+    if match:
+        process = match.group('process_name').strip()
+        return process
 
-            pid = conn.pid
-        except: continue
-
-    if not pid:
-        out, err = None, None
-        
-        out, err = execute_command("sudo netstat -antulp | grep {}:{} | grep {}:{}", connection[0], connection[2], connection[1], connection[3])
-
-        match = re.search(r"\d+/(?P<process_name>.*)$", str(out))
-        if match == None:
-            return "pid: -1"
-        else:
-            return match.group('process_name').strip()
-
-    for proc in psutil.process_iter():
-        # print(proc)
-        if proc.pid == pid:
-            process = proc.name()
-
-    if not process:
-        return "pid: {}".format(pid)
-
-    return process
+    return "pid: -1"
 
 if __name__=="__main__":
     get_process_from_connection(None)
