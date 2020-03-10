@@ -5,6 +5,7 @@ from threading import Thread, Event
 from packets import PacketEvent
 from scapy.all import *
 from control import *
+from osd_cat import Osd
 
 class GodEye:
     @staticmethod
@@ -49,10 +50,12 @@ class GodEye:
 
     def __init__(self):
         self.event = Event()
-        self.control = Control()
+        self.osd = Osd()
+        self.control = Control(self.osd)
         self.thread = None
 
     def start(self):
+        self.osd.open()
         self.thread = Thread(target=GodEye._start_sniff, args=(self,))
         self.thread.start()
 
@@ -61,6 +64,7 @@ class GodEye:
         self.thread.join()
         self.event.clear()
         self.thread = None
+        self.osd.close()
 
 
 if __name__ == "__main__":

@@ -3,11 +3,56 @@ from scapy.all import *
 from packets import *
 from scapy.layers.dns import DNSRR, DNS, DNSQR
 from netifaces import interfaces, ifaddresses, AF_INET
+from rules import ApplicationsToRemotePortsRule, RootProcessWhiteListDomains
 
 class Control:
-    def __init__(self):
-        pass
+    def __init__(self, osd):
+        self.osd = osd
+        self.__initialize_rules()
 
+    def __initialize_rules(self):
+        self.rules = []
+
+        self.rules.append(ApplicationsToRemotePortsRule(
+                                                            [
+                                                                "chromium"
+                                                            ],
+                                                            [
+                                                                443, 
+                                                                80, 
+                                                                5228, # gmail protocol of chrome.. 
+                                                                53,
+                                                            ]
+                                                        ))
+
+        self.rules.append(ApplicationsToRemotePortsRule(
+                                                            [
+                                                                "pacman"
+                                                            ],
+                                                            [
+                                                                80, 
+                                                                53,
+                                                            ]
+                                                        ))
+
+        self.rules.append(ApplicationsToRemotePortsRule(
+                                                            [
+                                                                "curl"
+                                                            ],
+                                                            [
+                                                                80, 
+                                                                443, 
+                                                                53,
+                                                            ]
+                                                        ))
+
+        self.rules.append(RootProcessWhiteListDomains(
+                                                            [
+                                                                "_gateway",             # TODO: why is this happening
+                                                                "bbs.archlinux.org",
+                                                                "wtfismyip.com",        # i3 blocks script
+                                                            ]
+                                                        ))
     def __get_local_ips(self):
         ip_list = []
         for interface in interfaces():
@@ -41,7 +86,27 @@ class Control:
         if self.__is_packet_dns(packet): 
             DnsRepository.get_instance().on_packet_event(packet)
         
-        answer = DnsRepository.get_instance().query(packet.remote_ip)
+        to_print = True
+        for rule in self.rules:
+            if rule.is_match(packet): 
+                to_print = False
         
-        print("[-] [{}]{}: {} -> {}".format(packet.protocol, packet.process, packet.remote_ip, answer))
+        if to_print: 
+            print("[!] -[{process}]- ({length}): TCP -> {src}:{src_port} -> {dst}:{dst_port}".format(
+                                                                                                        process=packet.process,
+                                                                                                        length=packet.length,
+                                                                                                        src=packet.src_ip,
+                                                                                                        dst=packet.dst_ip,
+                                                                                                        src_port=packet.src_port,
+                                                                                                        dst_port=packet.dst_port
+                                                                                                    ))
+
+            self.osd.display("[!] -[{process}]- ({length}): TCP -> {src}:{src_port} -> {dst}:{dst_port}\n".format(
+                                                                                                                    process=packet.process,
+                                                                                                                    length=packet.length,
+                                                                                                                    src=packet.src_ip,
+                                                                                                                    dst=packet.dst_ip,
+                                                                                                                    src_port=packet.src_port,
+                                                                                                                    dst_port=packet.dst_port
+                                                                                                                ))
 

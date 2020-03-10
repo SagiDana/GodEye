@@ -10,11 +10,6 @@ def execute_command(cmd, *args):
         pipes = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         std_out, std_err = pipes.communicate()
 
-        # if len(std_err) == 0:
-        #     print("Command: {} | Stdout: {}".format(command, std_out))
-        #
-        # if len(std_err) > 0:
-        #     print("Command: {} | Stderr: {}".format(command, std_err))
         return std_out, std_err
 
     except Exception as e:
@@ -64,13 +59,6 @@ def get_process_from_connection(connection):
         out, err = None, None
         
         out, err = execute_command("sudo netstat -antulp | grep {}:{} | grep {}:{}", connection[0], connection[2], connection[1], connection[3])
-        # if out != '':
-        #     print(out)
-
-        # if not is_local_ip(connection[0]):
-        #     out, err = execute_command("sudo netstat -antulp | grep {}:{}", connection[0], connection[2])
-        # elif not is_local_ip(connection[1]):
-        #     out, err = execute_command("sudo netstat -antulp | grep {}:{}", connection[1], connection[3])
 
         match = re.search(r"\d+/(?P<process_name>.*)$", str(out))
         if match == None:

@@ -42,6 +42,8 @@ class DnsRepository:
                     answer = p[1][i].rdata
 
                     self.queries[answer] = DnsQuery(question, answer)      
+
+                    self.__clean_repository()
                 except Exception as e: pass
 
     def query(self, ip):
