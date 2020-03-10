@@ -45,7 +45,3 @@ class Control:
         
         print("[-] [{}]{}: {} -> {}".format(packet.protocol, packet.process, packet.remote_ip, answer))
 
-        print(DnsRepository.get_instance().queries)
-
-
-
