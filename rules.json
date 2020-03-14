@@ -12,17 +12,6 @@
     },
     {
         "process":"^pid: -1$",
-        "protocol":"^(tcp|udp)$",
-        "local_ip":"^.*$",
-        "local_port":"^.*$",
-        "local_domain":"^.*$",
-        "remote_ip":"^.*$",
-        "remote_port":"^53$",
-        "remote_domain":"^.*$",
-        "comment": "allow dns requests for all root processes"
-    },
-    {
-        "process":"^pid: -1$",
         "protocol":"^tcp$",
         "local_ip":"^.*$",
         "local_port":"^.*$",
@@ -77,7 +66,7 @@
         "comment": "allow git interact with github"
     },
     {
-        "process":"^(git-remote-ht|pacman|curl|chromium).*$",
+        "process":"^(pid: -1|git-remote-ht|pacman|curl|chromium).*$",
         "protocol":"^(tcp|udp)$",
         "local_ip":"^.*$",
         "local_port":"^.*$",
