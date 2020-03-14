@@ -1,0 +1,79 @@
+[
+    {
+        "process":"^pid: -1$",
+        "protocol":"^udp$",
+        "local_ip":"^.*$",
+        "local_port":"^.*$",
+        "local_domain":"^.*$",
+        "remote_ip":"^239\\.255\\.255\\.250$",
+        "remote_port":"^1900$",
+        "remote_domain":"^.*$",
+        "comment": "ignore multicast packets..."
+    },
+    {
+        "process":"^pid: -1$",
+        "protocol":"^(tcp|udp)$",
+        "local_ip":"^.*$",
+        "local_port":"^.*$",
+        "local_domain":"^.*$",
+        "remote_ip":"^.*$",
+        "remote_port":"^53$",
+        "remote_domain":"^.*$",
+        "comment": "allow dns requests for all root processes"
+    },
+    {
+        "process":"^pid: -1$",
+        "protocol":"^tcp$",
+        "local_ip":"^.*$",
+        "local_port":"^.*$",
+        "local_domain":"^.*$",
+        "remote_ip":"^.*$",
+        "remote_port":"^(443|80)$",
+        "remote_domain":"^wtfismyip\\.com.*$",
+        "comment": "i3blocks script"
+    },
+    {
+        "process":"^curl$",
+        "protocol":"^tcp$",
+        "local_ip":"^.*$",
+        "local_port":"^.*$",
+        "local_domain":"^.*$",
+        "remote_ip":"^.*$",
+        "remote_port":"^(443|80)$",
+        "remote_domain":"^.*$",
+        "comment": ""
+    },
+    {
+        "process":"^chromium.*$",
+        "protocol":"^tcp$",
+        "local_ip":"^.*$",
+        "local_port":"^.*$",
+        "local_domain":"^.*$",
+        "remote_ip":"^.*$",
+        "remote_port":"^(443|80|5228)$",
+        "remote_domain":"^.*$",
+        "comment": ""
+    },
+    {
+        "process":"^pacman$",
+        "protocol":"^tcp$",
+        "local_ip":"^.*$",
+        "local_port":"^.*$",
+        "local_domain":"^.*$",
+        "remote_ip":"^.*$",
+        "remote_port":"^(80)$",
+        "remote_domain":"^.*$",
+        "comment": ""
+    },
+    {
+        "process":"^(pacman|curl|chromium).*$",
+        "protocol":"(tcp|udp)",
+        "local_ip":".*",
+        "local_port":"^.*$",
+        "local_domain":"^.*$",
+        "remote_ip":"^.*$",
+        "remote_port":"^53$",
+        "remote_domain":"^.*$",
+        "comment": "allow dns requests for pacman, chromium and curl"
+    }
+]

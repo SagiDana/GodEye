@@ -1,55 +1,35 @@
-
-class Rule:
-    def __init__(self):
-        pass
-
-    def is_match(self, packet):
-        pass
-
 from dns.dns_queries import *
 import socket
-class RootProcessWhiteListDomainsRule:
-    def __init__(self, domains):
-        self.domains = domains
+import re
+
+
+class Rule:
+    def __init__(self, args):
+        self.process = args["process"]
+        self.protocol = args["protocol"]
+        self.local_ip = args["local_ip"]
+        self.local_port = args["local_port"]
+        self.local_domain = args["local_domain"]
+        self.remote_ip = args["remote_ip"]
+        self.remote_port = args["remote_port"]
+        self.remote_domain = args["remote_domain"]
+        self.comment = args["comment"]
 
     def is_match(self, packet):
-        if packet.process != "pid: -1": return False
+        if not re.match(self.process, packet.process): return False
+        if not re.match(self.protocol, packet.protocol): return False
+        if not re.match(self.local_ip, packet.local_ip): return False
+        if not re.match(self.local_port, str(packet.local_port)): return False
 
-        try:
-            domain = DnsRepository.get_instance().query(packet.remote_ip)
+        # not exist at the moment...
+        # if not re.match(self.local_domain, packet.local_domain): return False
 
-            if not domain: 
-                domain = socket.gethostbyaddr(packet.remote_ip)[0]
+        if not re.match(self.remote_ip, packet.remote_ip): return False
+        if not re.match(self.remote_port, str(packet.remote_port)): return False
 
-            for current_domain in self.domains:
-                if current_domain in domain: 
-                    return True
+        remote_domain = DnsRepository.get_instance().query(packet.remote_ip)
+        if not remote_domain: remote_domain = ""
+        if not re.match(self.remote_domain, remote_domain): return False
 
-        except: pass
-
-        return False
-
-class ApplicationsToRemotePortsRule:
-    def __init__(self, applications, remote_ports):
-        self.applications = applications
-        self.remote_ports = remote_ports
-
-    def is_match(self, packet):
-        for app in self.applications:
-            if app not in packet.process: continue
-
-            for port in self.remote_ports:
-                if packet.remote_port != port: continue
-                return True
-        return False
-
-class AllowMulticastAddressesRule:
-    def __init__(self): pass
-
-    def is_match(self, packet):
-        if packet.process != "pid: -1": return False
-
-        if packet.remote_ip.startswith("224"): return True
-        if packet.remote_ip.startswith("239"): return True
-
-        return False
+        return True
+        

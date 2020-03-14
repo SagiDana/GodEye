@@ -44,7 +44,9 @@ class DnsRepository:
                     self.queries[answer] = DnsQuery(question, answer)      
 
                     self.__clean_repository()
-                except Exception as e: pass
+                except Exception as e:
+                    print("[!] dns->on_packet_event() exception: {}".format(e))
+
 
     def query(self, ip):
         self.__clean_repository()

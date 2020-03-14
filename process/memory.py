@@ -7,7 +7,6 @@ class ProcessEntry:
 
         self.time = datetime.now()
 
-
 class ProcessMemory:
     _instance = None
 
