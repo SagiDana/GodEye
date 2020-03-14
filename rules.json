@@ -66,6 +66,17 @@
         "comment": ""
     },
     {
+        "process":"^git-remote-ht$",
+        "protocol":"^tcp$",
+        "local_ip":"^.*$",
+        "local_port":"^.*$",
+        "local_domain":"^.*$",
+        "remote_ip":"^.*$",
+        "remote_port":"^(443)$",
+        "remote_domain":"^github\\.com\\.$",
+        "comment": "allow git interact with github"
+    },
+    {
         "process":"^(pacman|curl|chromium).*$",
         "protocol":"(tcp|udp)",
         "local_ip":".*",
