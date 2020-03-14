@@ -66,7 +66,7 @@
         "comment": "allow git interact with github"
     },
     {
-        "process":"^(pid: -1|git-remote-ht|pacman|curl|chromium).*$",
+        "process":"^(pid: -1|git-remote-h|pacman|curl|chromium).*$",
         "protocol":"^(tcp|udp)$",
         "local_ip":"^.*$",
         "local_port":"^.*$",
