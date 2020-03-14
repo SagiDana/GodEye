@@ -55,7 +55,7 @@
         "comment": "for some reason pacman uses http and not https"
     },
     {
-        "process":"^git-remote-ht$",
+        "process":"^git-remote-h$",
         "protocol":"^tcp$",
         "local_ip":"^.*$",
         "local_port":"^.*$",
