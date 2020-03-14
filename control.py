@@ -78,13 +78,13 @@ class Control:
                                                                                                             )
                                                                                                         )
 
-            # self.osd.display("[{process}]-({length}):[TCP]->{src}:{src_port}->{dst}:{dst_port}[[{remote_domain}]]\n".format(
-                                                                                                                    # process=packet.process,
-                                                                                                                    # length=packet.length,
-                                                                                                                    # src=packet.src_ip,
-                                                                                                                    # dst=packet.dst_ip,
-                                                                                                                    # src_port=packet.src_port,
-                                                                                                                    # dst_port=packet.dst_port,
-                                                                                                                    # remote_domain=DnsRepository.get_instance().query(packet.remote_ip
-                                                                                                                # )))
+            self.osd.display("[{process}]-({length}):[TCP]->{src}:{src_port}->{dst}:{dst_port}[[{remote_domain}]]\n".format(
+                                                                                                                    process=packet.process,
+                                                                                                                    length=packet.length,
+                                                                                                                    src=packet.src_ip,
+                                                                                                                    dst=packet.dst_ip,
+                                                                                                                    src_port=packet.src_port,
+                                                                                                                    dst_port=packet.dst_port,
+                                                                                                                    remote_domain=DnsRepository.get_instance().query(packet.remote_ip
+                                                                                                                )))
 
