@@ -63,7 +63,7 @@
         "remote_ip":"^.*$",
         "remote_port":"^(80)$",
         "remote_domain":"^.*$",
-        "comment": ""
+        "comment": "for some reason pacman uses http and not https"
     },
     {
         "process":"^git-remote-ht$",
@@ -78,13 +78,13 @@
     },
     {
         "process":"^(git-remote-ht|pacman|curl|chromium).*$",
-        "protocol":"(tcp|udp)",
-        "local_ip":".*",
+        "protocol":"^(tcp|udp)$",
+        "local_ip":"^.*$",
         "local_port":"^.*$",
         "local_domain":"^.*$",
         "remote_ip":"^.*$",
         "remote_port":"^53$",
         "remote_domain":"^.*$",
-        "comment": "allow dns requests for pacman, chromium and curl"
+        "comment": "allow dns requests"
     }
 ]
